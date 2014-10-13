@@ -23,6 +23,7 @@
 
     </tr>
 </table>
+
 <script type="text/javascript">
     var canvas = document.getElementById("myCanvas");
     canvas.addEventListener('mousedown',OnCanvasClick,false);
@@ -31,31 +32,75 @@
     var btnGenerate = document.getElementById('btnGenerate');
     btnGenerate.addEventListener('mousedown',OnGenerateClick,false);
     var btnCalculate = document.getElementById('btnCalculate');
+    btnCalculate.addEventListener('mousedown',OnCalculateClick,false);
 
 
     var x = Math.floor((Math.random()*400)+1);
     var y = Math.floor((Math.random()*400)+1);
-    function point(x, y){
-        ctx.fillRect(x,y,2,2);
+    var point = new Object();
+    point.x = x;
+    point.y = y;
+    var pointArray = [];
+
+    function DrawPoint(point){
+        ctx.fillRect(point.x,point.y,2,2);
     }
+
+    function DrawLine(pointA,pointB)
+    {
+        ctx.beginPath();
+        ctx.moveTo(pointA.x,pointA.y);
+        ctx.lineTo(pointB.x,pointB.y);
+        ctx.stroke;
+    }
+
     function OnCanvasClick(evt)
     {
         var rect = canvas.getBoundingClientRect();
          x = evt.clientX - rect.left,
          y = evt.clientY - rect.top
-         point(x,y);
+         point = new Object();
+         point.x = x;
+         point.y = y;
+         pointArray.push(point);
+         DrawPoint(point);
     }
 
     function OnGenerateClick(evt) {
-        ctx.clearRect(0,0,canvas.width,canvas.height);
+        ClearCanvas();
         var txtNumPoints = parseInt(document.getElementById('txtNumPoints').value,10);
         for (var i = 0; i < txtNumPoints; i++) {
             x = Math.floor((Math.random() * 400) + 1);
             y = Math.floor((Math.random() * 400) + 1);
-            point(x,y);
+            point = new Object();
+            point.x = x;
+            point.y = y;
+            pointArray.push(point);
+            DrawPoint(point);
         }
     }
 
+    function OnCalculateClick(evt)
+    {
+        var ch = new ConvexHull();
+        ch.AddPoints(pointArray);
+        var hullPoints = ch.CreateHull();
+        for(var i = 0; i < hullPoints.length -1 ;i++)
+        {
+            DrawLine(hullPoints[i],hullPoints[i+1]);
+        }
+        // Close the hull
+        var startPoint =  hullPoints[0];
+        var endPoint = hullPoints[hullPoints.length -1];
+        DrawLine(startPoint,endPoint)
+    }
+
+    function ClearCanvas()
+    {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+    }
+
 </script>
+<script type="text/javascript" src="JSCGAL/ConvexHull.js"></script>
 </body>
 </html>
