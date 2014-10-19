@@ -4,10 +4,17 @@
 
     <meta charset="UTF-8">
     <title></title>
+
 </head>
-<body>
-<h2>JSCGAL DEMO</h2>
-<table border="1">
+<body style="background-color:#269;
+background-image: linear-gradient(grey 1px, transparent 1px),
+linear-gradient(90deg, grey 1px, transparent 1px),
+linear-gradient(rgba(255,255,255,.3) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255,255,255,.3) 1px, transparent 1px);
+background-size:100px 100px, 100px 100px, 20px 20px, 20px 20px;
+background-position:-2px -2px, -2px -2px, -1px -1px, -1px -1px">
+<h2 style="color: white">JSCGAL DEMO</h2>
+<table border="1" style="color: white">
     <tr>
         <td valign="top">Convex Hull</td>
         <td><canvas id="myCanvas" width="400" height="400"></canvas></td>
@@ -43,7 +50,13 @@
     var pointArray = [];
 
     function DrawPoint(point){
-        ctx.fillRect(point.x,point.y,2,2);
+        ctx.beginPath();
+        ctx.rect(point.x,point.y,2,2);
+        //ctx.fillStyle = '#7FFF00';
+        //ctx.fill();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = '#7FFF00';
+        ctx.stroke();
     }
 
     function DrawLine(pointA,pointB)
@@ -51,7 +64,8 @@
         ctx.beginPath();
         ctx.moveTo(pointA.x,pointA.y);
         ctx.lineTo(pointB.x,pointB.y);
-        ctx.stroke;
+        ctx.strokeStyle ='#7FFF00';
+        ctx.stroke();
     }
 
     function OnCanvasClick(evt)
@@ -68,6 +82,7 @@
 
     function OnGenerateClick(evt) {
         ClearCanvas();
+        pointArray = [];
         var txtNumPoints = parseInt(document.getElementById('txtNumPoints').value,10);
         for (var i = 0; i < txtNumPoints; i++) {
             x = Math.floor((Math.random() * 400) + 1);

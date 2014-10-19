@@ -10,27 +10,30 @@ function ConvexHull()
 
     this.AddPoints = function(p_points){points = p_points;}
 
-
+    // Created using Monotone chain algorithm which splits the hull into upper and lower halves and computes each
+    // individually. The results are then merged as lower + upper.
     this.CreateHull = function()
     {
         points.sort(CompareX);
-        if(points.length > 1) {
-            hullUpper.push(points[0]);
-            hullUpper.push(points[1]);
-            for(var i = 2;i < points.length;i++)
-            {
-                var direction = ccw(points[i-1],points[i],points[i+1]);
-                var temp = (direction <=0 && hullUpper.length > 1);
-                hullUpper.push(points[i]);
-                while((direction <=0 && hullUpper.length > 2)== true)
-                {
-                    var lastPoint = hullUpper.pop();
-                    // remove middle
-                    hullUpper.pop();
-                    hullUpper.push(lastPoint);
-                }
+        var lower = [];
+        for (var i = 0; i < points.length; i++) {
+            while (lower.length >= 2 && ccw(lower[lower.length - 2], lower[lower.length - 1], points[i]) <= 0) {
+                lower.pop();
             }
+            lower.push(points[i]);
         }
+
+        var upper = [];
+        for (var i = points.length - 1; i >= 0; i--) {
+            while (upper.length >= 2 && ccw(upper[upper.length - 2], upper[upper.length - 1], points[i]) <= 0) {
+                upper.pop();
+            }
+            upper.push(points[i]);
+        }
+
+        upper.pop();
+        lower.pop();
+        return lower.concat(upper);
 
     }
 
